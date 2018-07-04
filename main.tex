@@ -1,8 +1,24 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsthm}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage[options]{algorithm2e}
 
-\title{Fourier Analysis and Deep Learning Journal}
-\author{Lillian González-Albino}
+%\newtheorem{theorem}{Theorem}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\title{Fourier Analysis and Deep Learning Technical Report}
+\author{Rosa Garza & Lillian González Albino & Sylvia Nwakanma}
 \date{July 2018}
 
 \begin{document}
@@ -10,87 +26,41 @@
 \maketitle
 
 \begin{abstract}
-    The use of Non-Abelian Fourier analysis to study interactions between mutations in different genes is a novel approach in the study of genomics. In this research, we apply the Fourier analysis to extract features from a genomic data set and use those features for machine learning models. As opposed to other methods, the Fourier analysis provides precise information about the behavior of coalitions as an orthogonal decomposition. Using spectral analysis it is easy to interpret and find the higher order interactions between variables with the largest effects on the data thus making them good predictors. We incorporate partitioning techniques from [1]  in our approach to reduce the size of our working set by removing redundant information without altering the data.
+    In this research, we apply Fourier analysis as a tool to extract important features from a given dataset and use the features as predictors for a deep learning model. As opposed to other methods like the spacial model, the Fourier analysis provides precise information about the behavior of coalitions while not removing any of the data. Using spectral analysis it is easy to interpret and find the coalitions with the largest effects on the data thus making them good predictors. Since we will be working with large datasets, we will use a partitioning technique described in \cite{David} that will reduce the size or our working set by  removing redundant information without altering the data.  
 \end{abstract}
-\section{Introduction}
-    The abstract presented above is the most current version of the abstract for my SACNAS application, pending review from mentors. In this journal, I will attempt to record my study daily in order to facilitate mentoring, help to better structure my work and my team's work, better formulate questions for the next group meeting with mentors, and track my progress. 
 
-\section{Week One}
-\subsection{Monday 2}
-    \begin{itemize}
-        \item Continued reading \cite{Senior-Thesis} up until most of Appendix B (which contains code in matlab).
-        \item Calculated by hand the adjacency matrix of two different examples taken from \cite{Senior-Thesis} and \cite{Court}.
-        \item Developed an algorithm to compute the adjacency matrix of the Johnson Graph.
-        \item Wrote the algorithm into the technical report.
-        \item Helped write the function $alphabet\_choose\_k$, which just basically `renames' the function $combinations$ from the $itertools$ library. This was made so the code was more readable. 
-        \item Sylvia and Rosa calculated the eigen vectors of the adjacency matrix for the example one in \cite{Court} and we analyzed it together.
-        \item Got stuck in interpreting which eigen vectors correspond to each $M_i$ which can be solved by knowing the dimensions of each $M_i$, but we have not figured that out.
-        \item Wrote algorithm for calculating the $f_i$'s but it assumes we have a function that sorts the eigen vectors with their corresponding $M_i$'s and returns a list of eigen vectors in order of their corresponding $M_i$'s. For $M_i$'s with more then one eigen vector, it concatenates them into one matrix making them one element on the list.
-        \item Changed the abstract with the recommended edits given by Mario and David. Also changed the starting sentence to include the data set and also be different from the rest of my group's (as suggested by mentors).
-        \item Saw similarities between the eigen vectors of our adjacency matrix with the SVD in the sense that in SVD the largest eigen vector contained most of the information (or the best approximation of the image) and in ours, the largest eigen vector was the one corresponding to $M_0$ which has the average.
-        \item Sylvia, Rosa, and I asked the other Fourier Analysis group for help in analyzing the eigen vectors we calculated. Jackson helped us see that our eigen vectors are correct, but we have a scaling issue, we need to find the scalars so that we can get a correct basis for $M_i$ (which we are also stuck on).
-    \end{itemize}
+\section{Preliminaries}
+    \begin{definition}\cite{Jgraph} The \textbf{Johnson Graph} $J(n,k)$ has vertices given by the k-subsets of $\{1,\cdots,n\}$ with two vertices connected if and only if their intersection has size $k-1$.
+    \end{definition}
 
-\subsection{Tuesday 3}
-\subsubsection{Goals for today}
-    \begin{itemize}
-        \item Further study projection
-        \item Write pseudo code for projection function
-        \item Continue algorithm to calculate the $f_i$'s 
-        \item Read the link Mario's sent about genomic datasets
-        \item Write the implementation of the algorithm in python with Rosa and Sylvia
-        \item Ask for dataset, start looking at data set and ways to import the data onto python
-        \item Continue technical report with Rosa and Sylvia
-    \end{itemize}
-\subsubsection{Work done}
-    \begin{itemize}
-        \item Sylvia found the correct formula for 
-    \end{itemize}
-\subsection{Wednesday 4}
+\section{Work}
+    Algorithm to compute adjacency matrix from a Johnson graph. \\
+    \begin{algorithm}[H]
+        \SetAlgoLined
+        \KwResult{Eigen vectors of Adjacency Matrix of Johnson Graph}
+        initialize\;
+        Set $alphabet$ of size $n$ in lexicographical order\;
+        Set $k$ length of pairs\;
+        Define $tuple list$ = combinations of $alphabet$ of length $k$, no repetition, in lexicographical order\;
+        Define $Adj$ = zero matrix of size $\binom{n}{k}*\binom{n}{k}$\;
+        \For{$i$ in $tuple list$ \textbf{as} row index}
+        {
+            \For{$j$ in $tuple list$ \textbf{as} column index}
+            {
+                \If{$|tuple list\lbrack i\rbrack  \cap tuple list\lbrack j\rbrack|$ = $k-1$}{change $Adj\lbrack i,j\rbrack = 1$}
+            }
+        }
+        Define $eigen vecs$ = eigen vectors of $Adj$\;
+    \end{algorithm}
+\section{Future Work}
 
-\subsection{Thursday 5}
 
-\subsection{Friday 6}
+\begin{thebibliography}{}
+    \bibitem{David}Uminsky, David Thomas. “Generalized Spectral Analysis for Large Sets of Approval Voting Data.” Harved Mudd College, 2003, pp. 19–33.
 
-\section{Week Two}
-\subsection{Monday 9}
-
-\subsection{Tuesday 10}
-
-\subsection{Wednesday 11}
-
-\subsection{Thursday 12}
-
-\subsection{Friday 13}
-
-\section{Week Three}
-\subsection{Monday 16}
-
-\subsection{Tuesday 17}
-
-\subsection{Wednesday 18}
-
-\subsection{Thursday 19}
-
-\subsection{Friday 20}
-
-\section{Week Four}
-\subsection{Monday 23}
-
-\subsection{Tuesday 24}
-
-\subsection{Wednesday 25}
-
-\subsection{Thursday 26}
-
-\subsection{Friday 27}
-
-\begin{thebibliography}{3}
-\bibitem{Senior-Thesis} Uminsky, David Thomas. “Generalized Spectral Analysis for Large Sets of Approval Voting Data.” Harved Mudd College, 2003, pp. 19–33.
-
-\bibitem{Court} Lawson, B., Orrison, M., & Uminsky, D. (2006). Spectral analysis of the supreme court. Mathematics Magazine, 79(5), 340-346. h p://dx.doi.org/10.2307/27642969
-
-%\bibitem{Basketball} 
+    \bibitem{Court} Lawson, B., Orrison, M., & Uminsky, D. (2006). Spectral analysis of the supreme court. Mathematics Magazine, 79(5), 340-346. h p://dx.doi.org/10.2307/27642969
+    
+    \bibitem{Jgraph} Weisstein, Eric W. "Johnson Graph." From MathWorld--A Wolfram Web Resource. http://mathworld.wolfram.com/JohnsonGraph.html
 
 \end{thebibliography}
 
