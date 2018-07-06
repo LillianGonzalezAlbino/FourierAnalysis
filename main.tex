@@ -1,0 +1,179 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsthm}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage[options]{algorithm2e}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+%\newtheorem{theorem}{Theorem}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\title{Fourier Analysis and Deep Learning Technical Report}
+\author{Rosa Garza & Lillian González Albino & Sylvia Nwakanma}
+\date{July 2018}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+   Within a machine learning neural network, one of the most important components for the model to make accurate predictions is which features of training data are used as predictors. In this paper, we use non-Abelian Fourier analysis by orthogonally decomposing a genomic dataset for feature extraction to identify higher order interactions between different gene mutations. This method is used to uncover previously unidentified features which may be important predictors within the given data. We incorporate partitioning techniques from \cite{David} in our approach to reduce the size of our working set by removing redundant information without altering the data. 
+\end{abstract}
+
+\section{Introduction}
+    We are given a data set of 104 (double check this) individuals with 26 different gene mutations and each individual's hemoglobin count. The documentation of a mutation in each individual is binary: 1 for the presence of a particular mutation and 0 if not present. We use Fourier Analysis to decompose this data set in order to understand how the interactions of mutations in the different gene expressions affect the hemoglobin count. We partition the data set into irreducible, orthogonal subsets of mutation, grouped by unordered lexicographic permutations. These subsets form orthogonal vector spaces on which we project the original data set to produce information about the "pure effects" of each mutation group; i.e, information about how different pairings of gene mutation affect the hemoglobin count. Using Marlow's Method, we are able to transform these pure effects into interpretable data that tells how significant certain mutation pairings are given the overall data set. This exploratory analysis of gene mutation interactions allow us to extract salient features of the data set used to train our deep learning algorithm. 
+    
+\section{Preliminaries}
+    When we're doing a spectral analysis, we create a function $f$ that takes in the power set of the variables or columns (in our case it would be the left and right gene mutations) and returns the amount of patients (rows) that did not have that specific combination of mutations. Then we construct our data vector $f$ by ordering our subsets of the power set in lexicographical order. We construct $M$ as the vector space that consists of all functions from the power set to $\mathbf{C}$, and we know that $f \in M$. After this, we partition the data vector into $n \choose k$ vector spaces that we will call $M^{(n-k,k)}$, i.e. $M = M^{(n,0)} \oplus M^{(n-1,1)} \oplus \cdots \oplus M^{(n-k,k)}$ where each $M^{(n-i,i)}$ is an orthogonal, homogeneous space\cite{David}. A way to implement these partitions is by using the adjacency matrices of Johnson Graph, that by definition have the same structure, and calculating the eigen vectors that are a basis for $M^{(n-k,k)}$. 
+    \begin{definition}
+        Let $G$ be a finite group and $X$ be a finite set. Define an equivalence on by $x ~ y$ if for some $s \in G, sx = y$. $G$ operates transitively on $X$ if there is only one equivalence class. A set with a group acting transitively on it is called a \textbf{homogeneous space}.
+    \end{definition}
+    \begin{definition}\cite{Jgraph} 
+        The \textbf{Johnson Graph} $J(n,k)$ has vertices given by the k-subsets of $\{1,\cdots,n\}$ with two vertices connected if and only if their intersection has size $k-1$.
+    \end{definition}
+    \begin{definition} 
+        The \textbf{(unweighted) adjacency matrix} is a matrix that whose $i,j$ entry has value $1$ if there is an edge between vertex $i$ and $j$ and has value $0$ if otherwise. 
+    \end{definition}
+    \begin{remark} 
+        If all edges between $i$ and $j$ are undirected, then the adjacency matrix is symmetric. 
+    \end{remark}
+    These vector spaces $M^{(n,k)}$ can be decomposed into irreducible, orthogonal sub-spaces as follows $M^{(n-k,k)} = M^{(n-k,k)}_0 \oplus M^{(n-k,k)}_1 \oplus \cdots \oplus M^{(n-k,k)}_k$ where each $M^{(n-k,k)}_i$ corresponds to the pure $i^{th}$ order coalition effects \cite{David}.
+    \begin{definition}\cite{OrthoDecomp} The \textbf{Orthogonal     
+        Decomposition} of a vector $y \in R^n$ is the sum of a vector in a subspace $W$ of $R^n$ and a vector in the orthogonal complement $W^\perp $ to $W$, i.e.,
+        \begin{equation*}
+            y = w + w^\perp.
+        \end{equation*}
+        Geometrically, $w$ is the orthogonal projection of $y$ onto the subspace $W$ and $w^\perp$ is a vector orthogonal to $w$
+    \end{definition}
+    Given a partition $M^{(n-k,k)}$, when we project our data vector $f$ on to $M^{(n-k,k)}_i$ we can study the coalition behaviors (as individuals, pairs, triples, $\cdots$, $k$ groups) of our mutations inside the sub-space of groups of length $k$. When we project $f$ onto each $M^{(n-k,k)}_i$, we get the following 
+    \begin{equation*}
+        f = f_0 + f_1 + \cdots + f_k
+    \end{equation*}
+    where $f_i \in M^{(n-k,k)}_i$.
+    \begin{definition}\cite{cliffnotes} The \textbf{projection}
+      of a vector $f$ onto the n dimensional vector space $M$ is given by the sum
+      \begin{equation*}
+          p = \frac{m_1\cdot f}{m_1\cdot m_1}\cdot m_1 + \frac{m_2\cdot f}{m_2\cdot m_2}\cdot m_2 + \cdots + \frac{m_n\cdot f}{m_n\cdot m_n}\cdot m_n
+      \end{equation*}  
+    where $p$ is the projection of $f$ onto $M$ and $m_i$ is the $i^{th}$ basis vector of $M$.
+      
+    \end{definition}
+\section{Algorithms}
+    Algorithm to compute the eigen vectors of the adjacency matrix from a Johnson graph. \\
+    \begin{algorithm}[H]
+        \SetAlgoLined
+        \KwResult{Eigen vectors of Adjacency Matrix of Johnson Graph}
+        initialize\;
+        Set $alphabet$ of size $n$ in lexicographical order\;
+        Set $k$ length of pairs\;
+        Define $tuple\ list$ = combinations of $alphabet$ of length $k$, no repetition, in lexicographical order\;
+        Define $Adj$ = zero matrix of size $\binom{n}{k}*\binom{n}{k}$\;
+        \For{$i$ in $tuple\ list$ \textbf{as} row index}
+        {
+            \For{$j$ in $tuple\ list$ \textbf{as} column index}
+            {
+                \If{$|tuple\ list\lbrack i\rbrack  \cap tuple\ list\lbrack j\rbrack|$ = $k-1$}{change $Adj\lbrack i,j\rbrack = 1$}
+            }
+        }
+        Define $eigen\ vecs$ = eigen vectors of $Adj$\;
+        Define $eigen\ vals$ = eigen values of $Adj$\;
+        Return $eigen\ vecs$ and $eigen\ vals$\;
+        \textbf{end} 
+    \end{algorithm} \\
+    \vspace{2mm}
+    Algorithm to compute the basis for $M$. \\
+    \begin{algorithm}[H]
+        \SetAlgoLined
+        \KwResult{Basis for all $M_i$'s}
+        initialize\;
+        Set $eigen\ vectors$ and corresponding $eigen\ values$\;
+        Define $distinct\ values$ = list of distinct values in $eigen\ values$ \;
+        Sort $distinct\ values$\;
+        Define $M\ basis$ = empty list \;
+        \For{each $distinct\ value$ element $val$}{
+            Define $vector\ matrix$ = empty matrix\;
+            \For{$i$ from $0 \rightarrow |eigen values|$}{
+                \If{$val = eigen\ value$ index $i$}{
+                    Append $eigen\ value$ index $i$ as a row to $vector\ matrix$ \;                
+                }
+            }
+            Append $vector\ matrix$ to $M\ basis$\;
+        }
+        Return $M\ basis$\;
+        \textbf{end}
+    \end{algorithm} \\
+    \vspace{2mm}
+    Algorithm to project data vector $f$ onto $M$.\\
+    \begin{algorithm}[H]
+        \SetAlgoLined
+        \KwResult{List of $f_i$'s for a given $M^{(n,k)}$}
+        initialize\;
+        Set $f$ = data\;
+        Set $M\ basis$ = list of all $M_i$ basis\;
+        Define $f_i's$ = empty list\;
+        \For{$i$ from $o \rightarrow$ amount of $M_i$\'s}{
+            Define $f_i$ = zero vector\;
+            \For{$v$ from $0 \rightarrow$ number of rows on $M$ index $i$}{
+                Add $\frac{f\cdot v}{v \cdot v}v$ to $f_i$\;
+            }
+            Append $f_i$ to $f_i's$ list\;
+        }
+        Return $f_i's$ list\;
+        \textbf{end}
+    \end{algorithm}
+    \vspace{2mm}
+\section{Work for this week}
+    \begin{itemize}
+        \item Finish `reducing' the dataset with the specifications given by mentors (temporary reduce, we will use a different method of reduction for the final analysis).
+        \item Create an algorithm that uses Mallow's Method on the $f_i$'s and gives the `true' value of $f_i$'s (which just means that after we use this method, we can analyze the $f_i$'s effects where out $i$'s are smaller than our $k$ and bigger than $0$ which is the mean)
+        \item First attempt at analyzing the data with the reduced set and (if Mallow's Method is implemented, it is better, but if not, we can still make an analysis of the $f_i$'s that have $i=k$)
+    \end{itemize}
+
+\begin{thebibliography}{}
+    \bibitem{David} Uminsky, David Thomas. “Generalized Spectral Analysis for Large Sets of Approval Voting Data.” Harved Mudd College, 2003, pp. 19–33.
+
+    \bibitem{Court} Lawson, B., Orrison, M., & Uminsky, D. (2006). Spectral analysis of the supreme court. Mathematics Magazine, 79(5), 340-346. h p://dx.doi.org/10.2307/27642969
+    
+    \bibitem{Jgraph} Weisstein, Eric W. "Johnson Graph." From MathWorld--A Wolfram Web Resource. http://mathworld.wolfram.com/JohnsonGraph.html
+    
+    \bibitem{OrthoDecomp} Bengtsson, Viktor. "Orthogonal Decomposition." From MathWorld--A Wolfram Web Resource, created by Eric W. Weisstein. http://mathworld.wolfram.com/OrthogonalDecomposition.html
+    
+    \bibitem{cliffnotes} Cliff Notes https://www.cliffsnotes.com/study-guides/algebra/linear-algebra/real-euclidean-vector-spaces/projection-onto-a-subspace
+\end{thebibliography}
+
+\section{Literature Review}
+\subsection{Generalized Spectral Analysis for Large Sets of Approval Voting Data}
+David Thomas Uminsky, Michael Orrison, Advisor
+
+	Within David Thomas Uminsky’s and Michael Orrison’s paper, Uminsky discusses the use of a new method used to analyze approval voting data. His proposed methodology was to partition a data set into equivalence classes in order to compute the decomposition of the data because an issue that arises is that when the data set increases, it then becomes too large to be able to compute the decompositions. Uminsky discusses how spatial models are not able to completely show coalition formations within the data set which is why a generalized spectral analysis is a method he implements on the U.S. Supreme Court voting behavior for over a 50 year time frame. He also discusses the use of statistical techniques to provide information about whether or not the results found were valid. \par
+	In regards to the Supreme Court example, Uminsky mentions that the spatial model technique was first presented by Keith Poole and Howard Rosenthal in which their finding was that based on an individual’s position of being liberal or conservative is what dictated whether a person was going to vote “yay” or “nay”; however, this is only looking at the individuals on an individual level rather than trying to see coalitions that occurred and could potentially influence the outcome of a voting. Not only is this an issue with spatial models, but another issue that arises is the need to remove data because of small coalitions that do not compute well within the technique Keith Poole and Howard Rosenthal performed. \par 
+	With Uminsky’s generalized spectral analysis,  he focuses on using representation and group theory in order to describe the voting data as a function which is acting, “…on a subset of the power set of voting members”[Uminksy]. Because the focus is only on minority votes in a data set, the domain of f will be of size $ \floor{n/2} $ in which the number of voters is n, and X will be up to the same size and contain elements within that power set. Because Uminsky uses representation and group theory, he goes through an example which shows M to be of a decomposition of “ a collection of homogeneous spaces with respect to $S_n$” where the groupings are of subsets of $k\leq \floor{n/2}$.
+He then leads further to extend the homogeneous space in which we then think of each $M^{n-i,i}$ space as an orthogonal, homogeneous space and M in general “decomposes into orthogonal, irreducible subspaces” [Uminsky]. With the decomposition of M, we will get:
+\begin{equation}
+  M^{n-k,k}=M_0^{n-k,k} \oplus M_1^{n-k,k} \oplus \cdots \oplus M_k{n-k,k}  
+\end{equation}
+Where $M_i^{n-k,k}$ corresponds to the “pure $i^{th}$ order coalition effects” [Uminksy]. By looking at each pure effect, it allows for an insight as to which coalitions have the most positive or negative influence, such as for the Supreme Court problem, it would be which i amount of voters have a coalition against the other $(n-i)$ voters. When further breaking down the actual spaces, we can see $M_1$ to describe voters behavior on an individual level and $M_2$ as describing voters behavior as pairings. Uminsky then leads into how “Mallow’s Method” is another method used with the data vector in order to see the amount of effect each coalition has. \par
+	In order to lead up to Mallow’s method, we would have our $M_i$ spaces in which we would project our f, or the vector that corresponds to the data of number of times certain individuals were in the minority, onto the $M_i$ space in order to see how much each individual voted in the minority. This method can then go further to analyze the pair effects and so on. Now with Mallow’s method, once each vector $f_i$ is found, we can then easily compute an inner product of the $f_i$ vector with another vector which focuses on each individual. For example, $f_A=\lbrack 1\, 1\, 1\, 1\, 0\, 0\, 0\, 0\, 0\, 0 \rbrack$ would be multiplied with an $f_i^{n-k,k}$ vector and show how much the individual is having within a $i^{th}$ pairing. \par
+	Overall, Uminsky found his results to be significant with applying the generalized spectral analysis to the Supreme Court voting data. He mentions the need to work on the statistics of the project and recursively find significant projections.  Another necessary improvement is on applying the generalized spectral analysis to non-binary data and to continue to develop theory on the partitioning technique.
+\subsection{Spectral Analysis of the Supreme Court} 
+B Lawson, M Orrison, David Uminsky
+
+\subsubsection{BasketballPaper} 
+
+
+
+\end{document}
