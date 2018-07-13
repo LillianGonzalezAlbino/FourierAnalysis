@@ -35,8 +35,7 @@ Sections:
   
 File: Color_Peaks Code Only  
 Sections:   
-  -Cleaning Raw Data*  
-    * Note: this code is already in the Main Spectral Analysis Code. The only update is extracting the column names.   
-    It's   stated in the code  
-  -Mini Helper Functions for the Color_Peaks Code  
-  -The Main Color_Peaks Code  
+  - Cleaning Raw Data*  
+    - Note: this code is already in the Main Spectral Analysis Code. The only update is extracting the column names. It's   stated in the code.   
+  - Mini Helper Functions for the Color_Peaks Code  
+  - The Main Color_Peaks Code  
