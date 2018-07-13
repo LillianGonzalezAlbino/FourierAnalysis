@@ -10,6 +10,7 @@ Sections:
   - Save plots (without color) to files
   - Save tables for groupings of mutations that actually occur in the data 
   - Values of combinations that occur in the data with paired value for each order
+    - Tables for mutations 6->1
   - Mallow's Method calculated on "raw" data vectors
   - Plot with colors of Mallow's Method on "raw" data vectors
     - Bugs on the legend of plots not fixed
@@ -23,7 +24,14 @@ Sections:
     - Zeros in the minorities
     - Ones in the minorities
   - Save plots (without color) to files
-  -
+  - Tables for groupings of mutations that actually occur in the data 
+    - Helper functions
+    - Main function
+  - Values of combinations that occur in the data with paired value for each order
+    - Tables for mutations 6->1
+    - Tables for mutations 8->7
+  - Mallow's Method calculated on "raw" data vectors
+
 File: Color_Peaks Code Only
 Sections: 
   -Cleaning Raw Data*
