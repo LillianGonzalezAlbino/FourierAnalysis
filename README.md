@@ -1,6 +1,6 @@
-FourierAnalysis 
-File: Spectral-Analysis-Reduced-Dataset(or). 
-Sections:  
+FourierAnalysis   
+File: Spectral-Analysis-Reduced-Dataset(or)  
+Sections:    
   - Dependancies 
   - Importing dataset  
   - Spectral Analysis Functions (up to Mallow's Method)  
