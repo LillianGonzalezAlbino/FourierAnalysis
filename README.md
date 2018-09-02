@@ -51,14 +51,14 @@ Sections:
 
 File: TwoSidedT_Test_Boxplots_FinalFindings
 Sections:
-  -OR Statistical Analysis (5-6 mutation groups with mutation A)
-    -- Mutation M
-    -- Coalition HM
-  -AND Statistical Analysis (2-6 mutation groups)
-    -- Helper function to get all hemoglobin levels from all k-groups
-    -- Helper function to get all hemoglobin levels from all k-groups based on a specific coalition
-    -- Coalition DG
-    -- Coalition CM
-    -- Coalition BCD
-    -- Coalition ACDM
+  - OR Statistical Analysis (5-6 mutation groups with mutation A)
+    - Mutation M
+    - Coalition HM
+  - AND Statistical Analysis (2-6 mutation groups)
+    - Helper function to get all hemoglobin levels from all k-groups
+    - Helper function to get all hemoglobin levels from all k-groups based on a specific coalition
+    - Coalition DG
+    - Coalition CM
+    - Coalition BCD
+    - Coalition ACDM
   
