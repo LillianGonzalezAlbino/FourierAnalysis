@@ -48,3 +48,17 @@ Sections:
     - Note: this code is already in the Main Spectral Analysis Code. The only update is extracting the column names. It's   stated in the code.   
   - Mini Helper Functions for the Color_Peaks Code  
   - The Main Color_Peaks Code  
+
+File: TwoSidedT_Test_Boxplots_FinalFindings
+Sections:
+  -OR Statistical Analysis (5-6 mutation groups with mutation A)
+    -- Mutation M
+    -- Coalition HM
+  -AND Statistical Analysis (2-6 mutation groups)
+    -- Helper function to get all hemoglobin levels from all k-groups
+    -- Helper function to get all hemoglobin levels from all k-groups based on a specific coalition
+    -- Coalition DG
+    -- Coalition CM
+    -- Coalition BCD
+    -- Coalition ACDM
+  
